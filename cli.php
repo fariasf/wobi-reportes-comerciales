@@ -6,9 +6,9 @@
 
   $path_asrun = $argv[1];
   $path_objetivos = $argv[2];
-  $formato = "ODT";
-  if(isset($argv[3])) {
+  $formato = "DOCX";
+  /*if(isset($argv[3])) {
     $formato = $argv[3];
-  }
+  }*/
 
   exit(generarReporte($path_objetivos, $path_asrun, $formato));

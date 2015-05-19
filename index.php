@@ -18,10 +18,10 @@
       echo '<div class="error">Error cargando PAUTA</div>';
       $error = true;
     }
-    $formato = 'ODT';
-    if(isset($_POST['formato'])) {
+    $formato = 'DOCX';
+    /*if(isset($_POST['formato'])) {
       $formato = $_POST['formato'];
-    }
+    }*/
 
     $datos_generales = array(
       'cliente' => $_POST['cliente'],

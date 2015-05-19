@@ -138,7 +138,7 @@ function emisionEnRangoDeObjetivo($fecha_emision, $hora_emision, $fecha_inicio_o
   return false;
 }
 
-function generarReporte($path_archivo_objetivos, $path_archivo_emisiones, $formato = "ODT", $descargar = false, $datos_generales = false) {
+function generarReporte($path_archivo_objetivos, $path_archivo_emisiones, $formato = "DOCX", $descargar = false, $datos_generales = false) {
   $objetivos = procesarArchivoObjetivos($path_archivo_objetivos);
   $emisiones = procesarArchivoEmisiones($path_archivo_emisiones);
   $resultados = compararObjetivosConEmisiones($objetivos, $emisiones);
@@ -164,10 +164,11 @@ function generarReporte($path_archivo_objetivos, $path_archivo_emisiones, $forma
   }
 
   $template .= '.' . strtolower($formato);
-
   $TBS->LoadTemplate($template);
   if($datos_generales) {
+    $TBS->PlugIn(OPENTBS_SELECT_HEADER);
     $TBS->MergeBlock('general', array('general' => $datos_generales));
+    $TBS->PlugIn(OPENTBS_SELECT_MAIN);
   }
   $TBS->MergeBlock('r', $resultados);
   $output_file_name = str_replace('.', '_'.date('Y-m-d').'.', $template);

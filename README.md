@@ -6,7 +6,7 @@ Versión 0.0.1
 
 El programa lee una pauta comercial en formato CSV junto con el archivo proporcionado por el telepuerto (ASRUN), los procesa y los compara para determinar el cumplimiento de las pautas comerciales.
 
-Devuelve el resultado en un archivo nuevo, usando como base los archivos Template ("template\_completo.odt" o "template\_completo.docx").
+Devuelve el resultado en un archivo nuevo, usando como base el archivo "template\_completo.docx".
 
 ##Instalación
 
@@ -24,7 +24,7 @@ Si se va a usar la interfaz web, descargar todos los archivos a una ruta accesib
 
 Se puede usar desde la línea de comandos:
 
-    php cli.php ASRUN.txt PAUTA.csv [ODT|DOCX]
+    php cli.php ASRUN.txt PAUTA.csv
 
 O accediendo desde un navegador (http://localhost/reportes_comerciales/index.php) y cargando los archivos.
 
@@ -60,14 +60,14 @@ Se entiende que el material MBMP02285S debería emitirse 30 veces a lo largo del
 
 ###Reportes
 
-Los reportes se emiten en un archivo ODT (OpenOffice) o DOCX (Microsoft Word) tomando como base los archivos template_* y combinándolos con los resultados de los cálculos. En este caso los horarios son de México.
+Los reportes se emiten en un archivo DOCX (Microsoft Word) tomando como base los archivos template_* y combinándolos con los resultados de los cálculos. En este caso los horarios son de México.
 
 ## Licencia
 
 ### Créditos
 
 Estilos para formularios: http://www.sanwebe.com/2013/10/css-html-form-styles
-Generación de archivos ODT/DOCX: http://www.tinybutstrong.com/opentbs.php
+Generación de archivos DOCX: http://www.tinybutstrong.com/opentbs.php
 
 ### Licencia
 
