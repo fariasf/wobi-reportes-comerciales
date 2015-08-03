@@ -44,11 +44,16 @@ function procesarArchivoEmisiones($path_archivo_emisiones) {
   $archivo_emisiones = fopen($path_archivo_emisiones, "r");
   if ($archivo_emisiones) {
     $last_date = false;
+    $line_num = 0;
+    $skip = false;
+
     while (($line = fgets($archivo_emisiones)) !== false) {
+      $line_num++;
       // Evitar errores con UTF8 y formatos DOS
       $line = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $line);
 
-      if(trim(substr($line, 0, 5)) === 'Reel:') { //si la línea actual es una fecha
+      if(trim(substr($line, 0, 7)) === 'Reel on') { //si la línea actual es una fecha
+        $skip = true; // Cuando cambia de día, omitir todo (salvo que después sepamos el engine correcto)
         $line = trim($line);
         for($i = 1; $i < 11; $i++) {
           $line = str_replace(' - V' . $i, '', $line);
@@ -56,26 +61,28 @@ function procesarArchivoEmisiones($path_archivo_emisiones) {
           $line = str_replace('V' . $i, '', $line);
         }
         $line = str_replace(' - V' . $i, '', $line);
-
+        $line = trim(substr($line, 0, 18));
         $last_date = implode('-', array_reverse(explode('/', substr(trim($line), -10))));
         if($last_date == '2013-8-S 9') die(var_dump($line));
-      } elseif (substr($line, 0, 3) === ' , ') { //si la línea actual es de contenido
-        if (! ($last_date === false)) { //y ya tengo una fecha
+      } elseif(substr($line, 0, 3) === ' , ' || substr($line, 0, 6) == '  ok ,') { //si la línea actual es de contenido
+        if (! ($last_date === false) && !($skip)) { //y ya tengo una fecha
           $line_data = explode(',', $line);
           if(trim($line_data[1]) !== 'Code') { //y no es un título
             //armo una fecha y hora con el registro actual
             $test_datetime = new DateTime($last_date  . trim($line_data[6]));
 
             //si es menor que la última que armé, es porque cambió de día
-            if(empty($old_datetime) || $old_datetime < $test_datetime) {
+            if(empty($old_datetime)) {
+              $old_datetime = $test_datetime;
+            }
+            if($test_datetime < $old_datetime) {
               //sumo un día
               $test_datetime->add(date_interval_create_from_date_string('1 day'));
 
               //actualizo los valores
-              $old_datetime = $test_datetime;
               $last_date = $test_datetime->format('Y-m-d');
             }
-
+            $old_datetime = $test_datetime;
             $line_data = array(
               'code' => trim($line_data[1]),
               'name' => trim($line_data[2]),
@@ -93,6 +100,7 @@ function procesarArchivoEmisiones($path_archivo_emisiones) {
             } catch( Exception $e ) { // Se formó una fecha inválida
               die(var_dump($last_date));
             }
+
             $mex_time = new DateTimeZone('America/Mexico_City');
             $datetime->setTimezone($mex_time);
             $line_data['mex_datetime'] = $datetime->format('Y-m-d H:i:s');
@@ -102,6 +110,8 @@ function procesarArchivoEmisiones($path_archivo_emisiones) {
             $emisiones[] = $line_data;
           }
         }
+      } elseif(substr($line, 0, 17) == 'Engine: enginemtx') {
+        $skip = false; // Ahora sí darle bolilla al contenido
       }
     }
   }
