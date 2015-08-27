@@ -110,7 +110,7 @@ function procesarArchivoEmisiones($path_archivo_emisiones) {
             $emisiones[] = $line_data;
           }
         }
-      } elseif(substr($line, 0, 17) == 'Engine: enginemtx') {
+      } elseif(substr($line, 0, 15) == 'Engine: engine2') {
         $skip = false; // Ahora sí darle bolilla al contenido
       }
     }
